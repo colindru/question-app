@@ -3,6 +3,8 @@
 
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+
+    <string name="button_test_alarm">Test Alarm</string>
     <string name="button_start_alarm">Start Alarm</string>
 
     <string name="show_message">Your Message</string>

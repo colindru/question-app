@@ -4,8 +4,11 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
         // Retrieve a PendingIntent that will perform a broadcast
         Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, 0);
+        Log.i("MainActivity", "OnCreate, intent created @" + SystemClock.elapsedRealtime());
     }
 
     @Override
@@ -55,22 +59,45 @@ public class MainActivity extends ActionBarActivity {
 
     public void startAlarm(View view){
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        int interval = 8000;
 
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+        // 30 second exact repeating alarm
+        manager.setRepeating(AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis(),
-                interval,
+                1000 * 30,
                 pendingIntent);
 
-        Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
+        // 15 minute inexact repeating alarm
+        /*manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis(),
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                pendingIntent);*/
+
+        Log.i("MainActivity", "Starting alarm @ " + SystemClock.elapsedRealtime());
+        Toast.makeText(this, "15-minute repeating alarm set", Toast.LENGTH_SHORT).show();
+    }
+
+    public void testAlarm(View view){
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        // One-time alarm
+        manager.set(AlarmManager.RTC_WAKEUP,
+                10,
+                pendingIntent);
+
+        Log.i("MainActivity", "Starting alarm @ " + SystemClock.elapsedRealtime());
+        Toast.makeText(this, "Here's your test alarm", Toast.LENGTH_SHORT).show();
+
+        Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for half a second
+        v.vibrate(500);
     }
 
     // Getting back into it!
-    public void sendMessage(View view){
+    /*public void sendMessage(View view){
         Intent intent = new Intent(this, DisplayMessageActivity.class);
         EditText editText = (EditText)findViewById(R.id.edit_message);
         String message = editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-    }
+    }*/
 }
